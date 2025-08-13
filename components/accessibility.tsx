@@ -21,17 +21,14 @@ export function AccessibleSkipLinks() {
 }
 
 export function ScreenReaderOnly({ 
-  children, 
-  as = "span",
+  children,
   ...props 
 }: {
   children: React.ReactNode
-  as?: keyof React.JSX.IntrinsicElements
-} & React.HTMLAttributes<HTMLElement>) {
-  const Component = as as React.ElementType
+} & React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <Component className="sr-only" {...props}>
+    <span className="sr-only" {...props}>
       {children}
-    </Component>
+    </span>
   )
 }
