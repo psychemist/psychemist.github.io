@@ -73,10 +73,27 @@ function StarfieldLoader() {
   )
 }
 
-export function StarfieldContainer() {
+export function StarfieldContainer({ konamiActivated = false }: { konamiActivated?: boolean }) {
   const [shouldRender3D, setShouldRender3D] = useState(false)
+  const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number } | null>(null)
   const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)")
   const isLowPerformance = useMediaQuery("(max-width: 768px)")
+
+  // Track cursor position for enhanced star interactions
+  useEffect(() => {
+    if (!konamiActivated) return
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const rect = document.body.getBoundingClientRect()
+      setCursorPosition({
+        x: (event.clientX / window.innerWidth) * 2 - 1,
+        y: -(event.clientY / window.innerHeight) * 2 + 1
+      })
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    return () => document.removeEventListener('mousemove', handleMouseMove)
+  }, [konamiActivated])
 
   useEffect(() => {
     // Device and preference checks
@@ -100,7 +117,10 @@ export function StarfieldContainer() {
 
   return (
     <Suspense fallback={<StarfieldLoader />}>
-      <StarfieldScene />
+      <StarfieldScene 
+        konamiActivated={konamiActivated}
+        cursorPosition={cursorPosition}
+      />
     </Suspense>
   )
 }

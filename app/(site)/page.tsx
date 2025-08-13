@@ -35,7 +35,7 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Animated starfield background */}
-      <StarfieldContainer />
+      <StarfieldContainer konamiActivated={konamiActivated} />
       
       {/* Cursor particle trail */}
       {particles.map(particle => (
