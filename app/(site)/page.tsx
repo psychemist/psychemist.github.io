@@ -6,6 +6,7 @@ import { useKonamiCode, useCursorTrail } from "@/lib/hooks/use-easter-eggs"
 import { useState, useEffect } from "react"
 import { site } from "@/site.config"
 import { StarfieldContainer } from "@/components/starfield-container"
+import { Typewriter } from "@/components/typewriter"
 
 export default function HomePage() {
   const [konamiActivated, setKonamiActivated] = useState(false)
@@ -51,7 +52,7 @@ export default function HomePage() {
           }}
         />
       ))}
-      
+    
       {/* Konami code activation message */}
       {showDevMessage && (
         <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-primary text-primary-foreground px-6 py-3 rounded-lg shadow-lg animate-pulse">
@@ -62,17 +63,26 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center z-10">
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6">
+          {/* Site name with dark mode border */}
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 dark:[text-shadow:_-1px_-1px_0_#000,_1px_-1px_0_#000,_-1px_1px_0_#000,_1px_1px_0_#000] dark:drop-shadow-[0_0_12px_rgba(0,0,0,0.8)]">
             {site.name}
           </h1>
           
-          <p className="text-xl sm:text-2xl lg:text-3xl text-muted-foreground mb-8 text-balance">
+          <p className="text-xl sm:text-2xl lg:text-3xl text-muted-foreground mb-8 text-balance dark:[text-shadow:_-1px_-1px_0_#000,_1px_-1px_0_#000,_-1px_1px_0_#000,_1px_1px_0_#000] dark:drop-shadow-[0_0_8px_rgba(0,0,0,0.6)]">
             {site.headline}
           </p>
           
-          <p className="text-lg sm:text-xl text-muted-foreground/80 mb-12 max-w-2xl mx-auto">
-            {site.bioFormal}
-          </p>
+          {/* Terminal-style bio with typewriter effect */}
+          <div className="text-lg sm:text-xl font-mono mb-12 max-w-2xl mx-auto bg-slate-900/90 dark:bg-black/40 backdrop-blur-sm rounded-lg px-4 py-3 border border-blue-500/30 shadow-lg">
+            <div className="text-blue-500 dark:text-blue-400">
+              <Typewriter 
+                text={site.bioFormal}
+                speed={80}
+                prefix="$ "
+                className="inline-block"
+              />
+            </div>
+          </div>
           
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

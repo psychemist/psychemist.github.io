@@ -105,43 +105,6 @@ function StarField({ count = 5000, konamiActivated = false, cursorPosition }: { 
   )
 }
 
-// Create realistic brain-like structure
-const createBrainStructure = (nodesCount: number): [number, number, number][] => {
-  const nodes: [number, number, number][] = []
-  const regions = {
-    frontal: { center: [0, 0.8, 1.2], size: 0.8, count: Math.floor(nodesCount * 0.25) },
-    parietal: { center: [0, 1, -0.3], size: 0.6, count: Math.floor(nodesCount * 0.2) },
-    temporal: { center: [1.2, 0, 0], size: 0.7, count: Math.floor(nodesCount * 0.15) },
-    temporal_r: { center: [-1.2, 0, 0], size: 0.7, count: Math.floor(nodesCount * 0.15) },
-    occipital: { center: [0, 0.2, -1.5], size: 0.5, count: Math.floor(nodesCount * 0.1) },
-    cerebellum: { center: [0, -0.8, -0.8], size: 0.4, count: Math.floor(nodesCount * 0.15) }
-  }
-
-  Object.entries(regions).forEach(([, region]) => {
-    for (let i = 0; i < region.count; i++) {
-      // Create clustered nodes within each brain region
-      const angle1 = Math.random() * Math.PI * 2
-      const angle2 = Math.random() * Math.PI
-      const radius = Math.random() * region.size
-
-      let x = region.center[0] + radius * Math.sin(angle2) * Math.cos(angle1)
-      const y = region.center[1] + radius * Math.sin(angle2) * Math.sin(angle1) 
-      let z = region.center[2] + radius * Math.cos(angle2)
-
-      // Apply brain-like deformation
-      const brainFactor = Math.sqrt(x*x + y*y + z*z)
-      if (brainFactor > 0) {
-        x *= (1 + 0.3 * Math.sin(angle1 * 3) * Math.cos(angle2 * 2))
-        z *= (1 + 0.2 * Math.sin(angle2 * 4))
-      }
-
-      nodes.push([x, y, z])
-    }
-  })
-
-  return nodes
-}
-
 // Anatomically accurate brain constellation coordinates
 const BRAIN_NODES = [
   [-2, 1.5, -5], [-1, 2, -5], [0, 2.2, -5], [1, 2, -5], [2, 1.5, -5],
@@ -192,7 +155,7 @@ function BrainConstellation({ konamiActivated = false }: { konamiActivated?: boo
       const time = state.clock.elapsedTime
       // Enhanced twinkling effect when Konami activated
       const material = pointsRef.current.material as THREE.PointsMaterial
-      const baseIntensity = konamiActivated ? 0.9 : 0.7
+      const baseIntensity = konamiActivated ? 0.8 : 0.7
       const twinkleIntensity = konamiActivated ? 0.4 : 0.3
       material.opacity = baseIntensity + Math.sin(time * (konamiActivated ? 3 : 2)) * twinkleIntensity
     }
