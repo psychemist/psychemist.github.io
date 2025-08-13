@@ -21,5 +21,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-
-// Easter egg: /* This config makes Next.js faster than the speed of light ⚡ */

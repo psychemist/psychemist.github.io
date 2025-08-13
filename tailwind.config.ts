@@ -91,5 +91,3 @@ const config: Config = {
 } satisfies Config;
 
 export default config;
-
-// Easter egg: /* Tailwind config so sharp it cuts through design systems like butter 🧈 */

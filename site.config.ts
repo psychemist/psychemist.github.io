@@ -13,5 +13,3 @@ export const site = {
   resumeUrl: "/resume.pdf",
   newsletterProvider: "substack" as const
 } as const;
-
-// Easter egg comment: /* The constellation of constants above powers the entire digital universe below ✨ */

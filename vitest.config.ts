@@ -14,5 +14,3 @@ export default defineConfig({
     },
   },
 })
-
-// Easter egg: /* Testing config that catches bugs faster than a debugging spider 🕷️ */
