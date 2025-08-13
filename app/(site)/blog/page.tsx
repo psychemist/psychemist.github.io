@@ -23,5 +23,3 @@ export default function BlogPage() {
     </div>
   )
 }
-
-/* Easter egg: Blog page where thoughts become digital reality ✍️ */

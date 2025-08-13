@@ -44,5 +44,3 @@ export default function ResumePage() {
     </div>
   )
 }
-
-/* Easter egg: Resume page that presents professional history like a digital CV 📋 */

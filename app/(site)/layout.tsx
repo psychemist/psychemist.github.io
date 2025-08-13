@@ -9,12 +9,10 @@ export default function SiteLayout({
   return (
     <div className="min-h-screen flex flex-col">
       <NavBar />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {children}
       </main>
       <Footer />
     </div>
   )
 }
-
-/* Easter egg: Site layout that holds everything together like digital scaffolding 🏗️ */

@@ -82,5 +82,3 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-
-/* Easter egg: API route that handles messages like a digital post office 📮 */

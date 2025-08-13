@@ -37,5 +37,3 @@ export function ThemeToggle() {
     </button>
   )
 }
-
-/* Easter egg: Theme toggle that flips reality like a cosmic light switch 🌙☀️ */

@@ -82,5 +82,3 @@ export default function HomePage() {
     </div>
   )
 }
-
-/* Easter egg: Home page that welcomes visitors like a digital front porch 🏠 */

@@ -36,5 +36,3 @@ export default function ProjectsPage() {
     </div>
   )
 }
-
-/* Easter egg: Projects page that will showcase digital masterpieces 🎨 */

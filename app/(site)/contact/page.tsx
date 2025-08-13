@@ -33,5 +33,3 @@ export default function ContactPage() {
     </div>
   )
 }
-
-/* Easter egg: Contact page that opens digital communication channels 📡 */

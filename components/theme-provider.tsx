@@ -9,5 +9,3 @@ export function ThemeProvider({
 }: React.ComponentProps<typeof NextThemesProvider>) {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }
-
-/* Easter egg: Theme provider that switches faster than a chameleon's mood 🦎 */

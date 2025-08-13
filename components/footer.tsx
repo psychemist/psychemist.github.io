@@ -61,5 +61,3 @@ export function Footer() {
     </footer>
   )
 }
-
-/* Easter egg: Footer that stands firm like the foundation of digital dreams 🏗️ */
