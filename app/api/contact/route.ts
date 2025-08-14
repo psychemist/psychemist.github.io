@@ -3,8 +3,8 @@ import { z } from "zod"
 
 // Validation schema
 const contactFormSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
-  email: z.string().email("Please enter a valid email address"),
+  name: z.string().min(2, "Name is required").max(100, "Name must be less than 100 characters"),
+  email: z.email("Please enter a valid email address"),
   message: z.string().min(10, "Message must be at least 10 characters").max(1000, "Message must be less than 1000 characters")
 })
 
@@ -100,52 +100,15 @@ Message: ${message}
     }
 
     if (process.env.SMTP_HOST) {
-      // Use nodemailer for custom SMTP
-      const nodemailer = await import('nodemailer')
-      
-      const transporter = nodemailer.default.createTransporter({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || '587'),
-        secure: process.env.SMTP_SECURE === 'true',
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      })
-
-      await transporter.sendMail({
-        from: process.env.SMTP_FROM || 'portfolio@yourdomain.com',
-        to: 'hello@example.com', // This would come from site.config.ts
-        subject: `New contact form message from ${name}`,
-        html: `
-          <div style="font-family: system-ui, sans-serif; line-height: 1.6; color: #333;">
-            <h2 style="color: #2563eb;">New Contact Form Submission</h2>
-            
-            <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <h3 style="margin-top: 0; color: #374151;">Contact Details</h3>
-              <p><strong>Name:</strong> ${name}</p>
-              <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-            </div>
-            
-            <div style="background: #f8fafc; padding: 20px; border-radius: 8px;">
-              <h3 style="margin-top: 0; color: #374151;">Message</h3>
-              <p style="white-space: pre-wrap;">${message}</p>
-            </div>
-            
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 14px; color: #6b7280;">
-              <p>This message was sent from your portfolio contact form.</p>
-              <p>Timestamp: ${new Date().toISOString()}</p>
-            </div>
-          </div>
-        `,
-      })
-
-      return { success: true }
+      // Use nodemailer for custom SMTP (requires nodemailer to be installed)
+      // For now, just log that SMTP is not implemented
+      console.log("SMTP configuration detected but nodemailer not installed")
+      return { success: false, error: 'SMTP not implemented' }
     }
 
     return { success: false, error: 'No email provider configured' }
   } catch (error) {
-    console.error('Email sending failed:', error)
+    console.error("Email sending failed:", error)
     return { success: false, error: 'Failed to send email' }
   }
 }
@@ -202,13 +165,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { 
           error: 'Validation failed', 
-          message: error.errors[0].message,
-          fields: error.errors.reduce((acc, err) => {
-            if (err.path[0]) {
-              acc[err.path[0]] = err.message
+          message: error.issues[0].message,
+          fields: error.issues.reduce((acc: Record<string, string>, issue) => {
+            if (issue.path[0]) {
+              acc[issue.path[0] as string] = issue.message
             }
             return acc
-          }, {} as Record<string, string>)
+          }, {})
         },
         { status: 400 }
       )

@@ -61,7 +61,7 @@ export default function ContactPage() {
         setSubmitStatus('error')
         setSubmitMessage(result.message || 'Something went wrong. Please try again.')
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus('error')
       setSubmitMessage('Network error. Please check your connection and try again.')
     } finally {
@@ -84,7 +84,7 @@ export default function ContactPage() {
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Have a project idea, collaboration opportunity, or just want to say hello? 
-            I'd love to hear from you.
+            I&apos;d love to hear from you.
           </p>
         </motion.div>
 
@@ -241,7 +241,7 @@ export default function ContactPage() {
 
             {/* Collaboration */}
             <Card className="p-8 bg-card/80 backdrop-blur-sm border-border/40">
-              <h2 className="text-2xl font-semibold text-foreground mb-6">Let's Build Something</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-6">Let&apos;s Build Something</h2>
               <div className="space-y-4 text-sm text-muted-foreground">
                 <div>
                   <h4 className="font-medium text-foreground">Open to:</h4>

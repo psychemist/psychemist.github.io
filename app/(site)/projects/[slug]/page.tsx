@@ -20,7 +20,7 @@ const PROJECTS_DATA = {
     links: {
       demo: "https://demo.example.com/zk-medical",
       repo: "https://github.com/example/zk-medical-records"
-    },
+    } as { demo?: string; repo?: string },
     coverImage: "/images/projects/zk-medical-placeholder.png",
     gallery: [
       "/images/projects/zk-medical-1.png",
@@ -100,7 +100,7 @@ We're exploring partnerships with healthcare providers to pilot this system in c
     date: "2024-07-20",
     links: {
       repo: "https://github.com/example/neural-trading-bot"
-    },
+    } as { demo?: string; repo?: string },
     coverImage: "/images/projects/neural-trading-placeholder.png",
     gallery: [
       "/images/projects/neural-trading-1.png",
@@ -146,7 +146,7 @@ The system consists of several key components:
     links: {
       demo: "https://demo.example.com/digital-minimalism",
       repo: "https://github.com/example/digital-minimalism"
-    },
+    } as { demo?: string; repo?: string },
     coverImage: "/images/projects/digital-minimalism-placeholder.png",
     gallery: [
       "/images/projects/digital-minimalism-1.png",
@@ -233,7 +233,7 @@ Currently working on:
     links: {
       demo: "https://demo.example.com/calm-focus",
       repo: "https://github.com/example/calm-focus-timer"
-    },
+    } as { demo?: string; repo?: string },
     coverImage: "/images/projects/calm-focus-placeholder.png",
     gallery: [
       "/images/projects/calm-focus-1.png",
@@ -270,7 +270,7 @@ Built as a Progressive Web App using React and TypeScript, with a focus on perfo
 Currently used by 500+ daily active users with an average session completion rate of 78%.
     `
   }
-}
+} as const
 
 interface ProjectDetailPageProps {
   params: {

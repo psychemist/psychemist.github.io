@@ -184,7 +184,7 @@ export default function ProjectsPage() {
             Interested in collaborating?
           </h2>
           <p className="text-muted-foreground mb-6">
-            I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
+            I&apos;m always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
           </p>
           <motion.a
             href="/contact"
