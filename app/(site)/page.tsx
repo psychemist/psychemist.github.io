@@ -4,9 +4,11 @@ import Link from "next/link"
 import { ArrowRight, Download } from "lucide-react"
 import { useKonamiCode, useCursorTrail } from "@/lib/hooks/use-easter-eggs"
 import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 import { site } from "@/site.config"
 import { StarfieldContainer } from "@/components/starfield-container"
 import { Typewriter } from "@/components/typewriter"
+import { SocialIcons } from "@/components/social-icons"
 
 export default function HomePage() {
   const [konamiActivated, setKonamiActivated] = useState(false)
@@ -62,19 +64,34 @@ export default function HomePage() {
       
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center z-10">
-          {/* Site name with dark mode border */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 dark:[text-shadow:_-1px_-1px_0_#000,_1px_-1px_0_#000,_-1px_1px_0_#000,_1px_1px_0_#000] dark:drop-shadow-[0_0_12px_rgba(0,0,0,0.8)]">
+        <div className="max-w-4xl mx-auto text-center z-10 pt-16">
+          {/* Site name with scroll animation */}
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 dark:[text-shadow:_-1px_-1px_0_#000,_1px_-1px_0_#000,_-1px_1px_0_#000,_1px_1px_0_#000] dark:drop-shadow-[0_0_12px_rgba(0,0,0,0.8)] mt-20"
+          >
             {site.name}
-          </h1>
+          </motion.h1>
           
-          <p className="text-xl sm:text-2xl lg:text-3xl text-muted-foreground mb-8 text-balance dark:[text-shadow:_-1px_-1px_0_#000,_1px_-1px_0_#000,_-1px_1px_0_#000,_1px_1px_0_#000] dark:drop-shadow-[0_0_8px_rgba(0,0,0,0.6)]">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="text-xl sm:text-2xl lg:text-3xl text-muted-foreground mb-8 text-balance dark:[text-shadow:_-1px_-1px_0_#000,_1px_-1px_0_#000,_-1px_1px_0_#000,_1px_1px_0_#000] dark:drop-shadow-[0_0_8px_rgba(0,0,0,0.6)]"
+          >
             {site.headline}
-          </p>
+          </motion.p>
           
           {/* Terminal-style bio with typewriter effect */}
-          <div className="text-lg sm:text-xl font-mono mb-12 max-w-2xl mx-auto bg-slate-900/90 dark:bg-black/40 backdrop-blur-sm rounded-lg px-4 py-3 border border-blue-500/30 shadow-lg">
-            <div className="text-blue-500 dark:text-blue-400">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+            className="text-lg sm:text-xl font-mono mb-12 max-w-2xl mx-auto bg-background/80 dark:bg-background/60 backdrop-blur-sm rounded-lg px-4 py-3 border border-border/50 shadow-lg"
+          >
+            <div className="text-foreground/90">
               <Typewriter 
                 text={site.bioFormal}
                 speed={80}
@@ -82,16 +99,21 @@ export default function HomePage() {
                 className="inline-block"
               />
             </div>
-          </div>
+          </motion.div>
           
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          {/* CTA Buttons with stagger animation */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8"
+          >
             <Link
               href="/projects"
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors group"
             >
               View Projects
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             
             <Link
@@ -110,21 +132,55 @@ export default function HomePage() {
             >
               Get in Touch
             </Link>
-          </div>
+          </motion.div>
+          
+          {/* Social Icons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
+            className="flex justify-center"
+          >
+            <SocialIcons />
+          </motion.div>
         </div>
       </section>
       
-      {/* Newsletter Section */}
-      <section className="relative py-16 px-4 sm:px-6 lg:px-8 border-t border-border/40 backdrop-blur-sm bg-background/80">
+      {/* Newsletter Section with parallax */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="relative py-16 px-4 sm:px-6 lg:px-8 border-t border-border/40 backdrop-blur-sm bg-background/80"
+      >
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-4">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-2xl font-bold text-foreground mb-4"
+          >
             Stay Updated
-          </h2>
-          <p className="text-muted-foreground mb-8">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-muted-foreground mb-8"
+          >
             Get notified about new projects, blog posts, and thoughts on the future of technology.
-          </p>
+          </motion.p>
           
-          <div className="border border-border/40 rounded-lg p-6 bg-card/80 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="border border-border/40 rounded-lg p-6 bg-card/80 backdrop-blur-sm"
+          >
             <p className="text-sm text-muted-foreground">
               Newsletter integration coming soon • Subscribe at{" "}
               <Link
@@ -133,12 +189,12 @@ export default function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {site.socials.substack}
+                {site.socials.substack.replace('https://', '')}
               </Link>
             </p>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
     </div>
   )
 }
