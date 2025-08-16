@@ -1,9 +1,11 @@
 ---
-title: "Building in Public: Why I Share My Failures"
+title: "Building in Public: My Most Expensive Failures and What They Taught Me"
 slug: "building-in-public-failures"
-excerpt: "The unexpected benefits of documenting failures, setbacks, and learning moments while building software products."
-tags: ["building-in-public", "mindset", "entrepreneurship"]
-publishedAt: "2024-08-01"
+excerpt: "A brutally honest look at three projects that crashed and burned, the lessons learned, and why failing publicly might be the best thing that happened to my career."
+tags: ["building-in-public", "failures", "startups", "lessons"]
+publishedAt: "2024-06-15"
+readingTime: "6 min read"
+coverImage: "/images/blog/building-in-public-failures.svg"
 ---
 
 # Building in Public: Why I Share My Failures

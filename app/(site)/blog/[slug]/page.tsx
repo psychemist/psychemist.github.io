@@ -272,13 +272,14 @@ The goal isn't to use less technology - it's to use technology in service of wha
 }
 
 interface BlogDetailPageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
-export default function BlogDetailPage({ params }: BlogDetailPageProps) {
-  const post = BLOG_DATA[params.slug as keyof typeof BLOG_DATA]
+export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
+  const { slug } = await params
+  const post = BLOG_DATA[slug as keyof typeof BLOG_DATA]
   
   if (!post) {
     notFound()

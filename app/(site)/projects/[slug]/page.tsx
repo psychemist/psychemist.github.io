@@ -273,13 +273,14 @@ Currently used by 500+ daily active users with an average session completion rat
 } as const
 
 interface ProjectDetailPageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
-export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
-  const project = PROJECTS_DATA[params.slug as keyof typeof PROJECTS_DATA]
+export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
+  const { slug } = await params
+  const project = PROJECTS_DATA[slug as keyof typeof PROJECTS_DATA]
   
   if (!project) {
     notFound()
