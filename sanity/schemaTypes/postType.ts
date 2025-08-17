@@ -19,6 +19,13 @@ export const postType = defineType({
       },
     }),
     defineField({
+      name: 'excerpt',
+      title: 'Excerpt',
+      type: 'text',
+      rows: 3,
+      description: 'Brief summary for email notifications and previews (optional - will auto-generate from content if empty)',
+    }),
+    defineField({
       name: 'author',
       type: 'reference',
       to: {type: 'author'},
@@ -45,6 +52,7 @@ export const postType = defineType({
     defineField({
       name: 'publishedAt',
       type: 'datetime',
+      description: 'Setting this date will trigger email notifications to subscribers when saved',
     }),
     defineField({
       name: 'body',
