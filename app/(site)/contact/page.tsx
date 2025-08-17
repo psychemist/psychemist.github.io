@@ -214,10 +214,10 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-medium text-foreground mb-2">Email</h3>
                   <a 
-                    href={`mailto:${site.emailPublic}`}
+                    href={`mailto:${site.author.email}`}
                     className="text-primary hover:text-primary/80 transition-colors"
                   >
-                    {site.emailPublic}
+                    {site.author.email}
                   </a>
                 </div>
                 

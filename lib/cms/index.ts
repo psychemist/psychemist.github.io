@@ -111,7 +111,7 @@ export class CMS {
       headline: site.headline,
       location: site.location,
       bio_formal: site.bioFormal,
-      email_public: site.emailPublic,
+      email_public: site.author.email,
       socials: site.socials,
       resume_url: site.resumeUrl,
       newsletter: {

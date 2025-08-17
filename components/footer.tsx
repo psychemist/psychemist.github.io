@@ -44,7 +44,7 @@ export function Footer() {
               <Twitter className="h-5 w-5" />
             </Link>
             <Link
-              href={`mailto:${site.emailPublic}`}
+              href={`mailto:${site.author.email}`}
               className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Email"
             >

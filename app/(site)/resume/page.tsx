@@ -65,10 +65,10 @@ export default function ResumePage() {
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Mail className="w-4 h-4" />
                   <Link 
-                    href={`mailto:${site.emailPublic}`}
+                    href={`mailto:${site.author.email}`}
                     className="hover:text-primary transition-colors"
                   >
-                    {site.emailPublic}
+                    {site.author.email}
                   </Link>
                 </div>
               </div>

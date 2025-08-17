@@ -73,7 +73,13 @@ function StarfieldLoader() {
   )
 }
 
-export function StarfieldContainer({ konamiActivated = false }: { konamiActivated?: boolean }) {
+export function StarfieldContainer({ 
+  konamiActivated = false, 
+  className = "" 
+}: { 
+  konamiActivated?: boolean
+  className?: string 
+}) {
   const [shouldRender3D, setShouldRender3D] = useState(false)
   const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number } | null>(null)
   const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)")
@@ -112,15 +118,17 @@ export function StarfieldContainer({ konamiActivated = false }: { konamiActivate
 
   // Show static fallback if reduced motion or low performance
   if (prefersReducedMotion || !shouldRender3D) {
-    return <StaticStarfield />
+    return <div className={className}><StaticStarfield /></div>
   }
 
   return (
-    <Suspense fallback={<StarfieldLoader />}>
-      <StarfieldScene 
-        konamiActivated={konamiActivated}
-        cursorPosition={cursorPosition}
-      />
-    </Suspense>
+    <div className={className}>
+      <Suspense fallback={<StarfieldLoader />}>
+        <StarfieldScene 
+          konamiActivated={konamiActivated}
+          cursorPosition={cursorPosition}
+        />
+      </Suspense>
+    </div>
   )
 }

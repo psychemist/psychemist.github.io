@@ -3,37 +3,73 @@
 import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { touchTargets, accessibilityColors } from "./accessibility"
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
-  // useEffect only runs on the client, so now we can safely show the UI
   React.useEffect(() => {
     setMounted(true)
   }, [])
 
   if (!mounted) {
     return (
-      <div className="h-9 w-9 rounded-md border border-input bg-background" />
+      <Button
+        variant="ghost"
+        size="sm"
+        className={cn(
+          touchTargets.minimum,
+          "h-8 w-8 px-0",
+          accessibilityColors.focusVisible
+        )}
+        disabled
+        aria-label="Loading theme toggle"
+      >
+        <div className="h-4 w-4 animate-pulse bg-muted rounded" />
+        <span className="sr-only">Loading theme preference</span>
+      </Button>
     )
   }
 
+  const isDark = theme === "dark"
+  const toggleTheme = () => {
+    setTheme(isDark ? "light" : "dark")
+  }
+
   return (
-    <button
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={toggleTheme}
       className={cn(
-        "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        "disabled:pointer-events-none disabled:opacity-50",
-        "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        "h-9 w-9"
+        touchTargets.minimum,
+        "h-8 w-8 px-0 hover:bg-accent hover:text-accent-foreground",
+        accessibilityColors.focusVisible
       )}
-      aria-label="Toggle theme"
+      aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
+      role="switch"
+      aria-checked={isDark}
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-    </button>
+      <Sun 
+        className={cn(
+          "h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0",
+          isDark && "sr-only"
+        )} 
+        aria-hidden={isDark}
+      />
+      <Moon 
+        className={cn(
+          "absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100",
+          !isDark && "sr-only"
+        )}
+        aria-hidden={!isDark}
+      />
+      <span className="sr-only">
+        {isDark ? "Currently in dark mode" : "Currently in light mode"}
+      </span>
+    </Button>
   )
 }

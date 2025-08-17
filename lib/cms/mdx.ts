@@ -184,7 +184,7 @@ export function getMDXProfile(): Profile {
     headline: site.headline,
     location: site.location,
     bio_formal: site.bioFormal,
-    email_public: site.emailPublic,
+    email_public: site.author.email,
     socials: {
       github: site.socials.github,
       linkedin: site.socials.linkedin,
