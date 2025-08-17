@@ -18,14 +18,12 @@ const PROJECTS_DATA = {
     role: "full-stack developer",
     date: "2024-09-15",
     links: {
-      demo: "https://demo.example.com/zk-medical",
+      demo: "http://localhost:3000/projects/zk-medical",
       repo: "https://github.com/example/zk-medical-records"
     } as { demo?: string; repo?: string },
-    coverImage: "/images/projects/zk-medical-placeholder.png",
+    coverImage: "/images/projects/zk-medical-records.svg",
     gallery: [
-      "/images/projects/zk-medical-1.png",
-      "/images/projects/zk-medical-2.png",
-      "/images/projects/zk-medical-3.png"
+      "/images/projects/zk-medical-records.svg"
     ],
     readingTime: "12 min read",
     content: `
@@ -101,10 +99,9 @@ We're exploring partnerships with healthcare providers to pilot this system in c
     links: {
       repo: "https://github.com/example/neural-trading-bot"
     } as { demo?: string; repo?: string },
-    coverImage: "/images/projects/neural-trading-placeholder.png",
+    coverImage: "/images/projects/neural-trading-bot.svg",
     gallery: [
-      "/images/projects/neural-trading-1.png",
-      "/images/projects/neural-trading-2.png"
+      "/images/projects/neural-trading-bot.svg"
     ],
     readingTime: "8 min read",
     content: `
@@ -144,14 +141,12 @@ The system consists of several key components:
     role: "creator",
     date: "2024-11-03",
     links: {
-      demo: "https://demo.example.com/digital-minimalism",
+      demo: "http://localhost:3000/projects/digital-minimalism",
       repo: "https://github.com/example/digital-minimalism"
     } as { demo?: string; repo?: string },
-    coverImage: "/images/projects/digital-minimalism-placeholder.png",
+    coverImage: "/images/projects/digital-minimalism-platform.svg",
     gallery: [
-      "/images/projects/digital-minimalism-1.png",
-      "/images/projects/digital-minimalism-2.png",
-      "/images/projects/digital-minimalism-3.png"
+      "/images/projects/digital-minimalism-platform.svg"
     ],
     readingTime: "10 min read",
     content: `
@@ -231,13 +226,12 @@ Currently working on:
     role: "designer & developer",
     date: "2024-05-12",
     links: {
-      demo: "https://demo.example.com/calm-focus",
+      demo: "http://localhost:3000/projects/calm-focus",
       repo: "https://github.com/example/calm-focus-timer"
     } as { demo?: string; repo?: string },
-    coverImage: "/images/projects/calm-focus-placeholder.png",
+    coverImage: "/images/projects/calm-focus-timer.svg",
     gallery: [
-      "/images/projects/calm-focus-1.png",
-      "/images/projects/calm-focus-2.png"
+      "/images/projects/calm-focus-timer.svg"
     ],
     readingTime: "6 min read",
     content: `

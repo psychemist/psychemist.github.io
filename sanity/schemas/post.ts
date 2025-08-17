@@ -67,18 +67,23 @@ export const postSchema = defineType({
         },
         {
           type: 'code',
+          name: 'code',
+          title: 'Code Block',
           options: {
-            language: {
-              list: [
-                {title: 'JavaScript', value: 'javascript'},
-                {title: 'TypeScript', value: 'typescript'},
-                {title: 'Python', value: 'python'},
-                {title: 'Bash', value: 'bash'},
-                {title: 'JSON', value: 'json'},
-                {title: 'CSS', value: 'css'},
-                {title: 'HTML', value: 'html'},
-              ],
-            },
+            language: 'javascript',
+            languageAlternatives: [
+              {title: 'JavaScript', value: 'javascript'},
+              {title: 'TypeScript', value: 'typescript'},
+              {title: 'Python', value: 'python'},
+              {title: 'Bash/Shell', value: 'bash'},
+              {title: 'JSON', value: 'json'},
+              {title: 'CSS', value: 'css'},
+              {title: 'HTML', value: 'html'},
+              {title: 'Solidity', value: 'solidity'},
+              {title: 'SQL', value: 'sql'},
+              {title: 'React JSX', value: 'jsx'},
+            ],
+            withFilename: true,
           },
         },
         {

@@ -17,7 +17,7 @@ const SEED_PROJECTS = [
     role: "full-stack developer",
     date: "2024-09-15",
     links: {
-      demo: "https://demo.example.com/zk-medical",
+      demo: "http://localhost:3000/projects/zk-medical",
       repo: "https://github.com/example/zk-medical-records"
     },
     coverImage: "/images/projects/zk-medical-placeholder.png"
@@ -45,7 +45,7 @@ const SEED_PROJECTS = [
     role: "creator",
     date: "2024-11-03",
     links: {
-      demo: "https://demo.example.com/digital-minimalism",
+      demo: "http://localhost:3000/projects/digital-minimalism",
       repo: "https://github.com/example/digital-minimalism"
     },
     coverImage: "/images/projects/digital-minimalism-placeholder.png"
@@ -59,7 +59,7 @@ const SEED_PROJECTS = [
     role: "designer & developer",
     date: "2024-05-12",
     links: {
-      demo: "https://demo.example.com/calm-focus",
+      demo: "http://localhost:3000/projects/calm-focus",
       repo: "https://github.com/example/calm-focus-timer"
     }
   }

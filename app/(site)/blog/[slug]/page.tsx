@@ -16,7 +16,7 @@ const BLOG_DATA = {
     publishedAt: "2024-12-10",
     readingTime: "8 min read",
     featured: true,
-    coverImage: "/images/blog/building-in-public-placeholder.png",
+    coverImage: "/images/blog/building-in-public-failures.svg",
     content: `
 # Building in Public: The Beautiful Failures
 
@@ -120,7 +120,7 @@ The difference this time? I started by asking 50 people about their relationship
     publishedAt: "2024-11-28",
     readingTime: "12 min read",
     featured: false,
-    coverImage: "/images/blog/future-work-ai-placeholder.png",
+    coverImage: "/images/blog/ai-agent-revolution.svg",
     content: `
 # The Future of Work: Human + AI Collaboration
 
@@ -183,7 +183,7 @@ The future of work isn't human vs. AI - it's human + AI. And that future is alre
     publishedAt: "2024-10-15",
     readingTime: "10 min read",
     featured: false,
-    coverImage: "/images/blog/digital-minimalism-placeholder.png",
+    coverImage: "/images/blog/react-to-svelte-switch.svg",
     content: `
 # Digital Minimalism: A Developer's Practice
 

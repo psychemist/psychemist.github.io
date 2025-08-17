@@ -77,6 +77,23 @@ export const projectSchema = defineType({
         },
         {
           type: 'code',
+          name: 'code',
+          title: 'Code Block',
+          options: {
+            language: 'javascript',
+            languageAlternatives: [
+              {title: 'JavaScript', value: 'javascript'},
+              {title: 'TypeScript', value: 'typescript'},
+              {title: 'Python', value: 'python'},
+              {title: 'Bash/Shell', value: 'bash'},
+              {title: 'JSON', value: 'json'},
+              {title: 'CSS', value: 'css'},
+              {title: 'HTML', value: 'html'},
+              {title: 'Solidity', value: 'solidity'},
+              {title: 'SQL', value: 'sql'},
+            ],
+            withFilename: true,
+          },
         },
         {
           type: 'image',
