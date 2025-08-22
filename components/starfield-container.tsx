@@ -90,7 +90,6 @@ export function StarfieldContainer({
     if (!konamiActivated) return
 
     const handleMouseMove = (event: MouseEvent) => {
-      const rect = document.body.getBoundingClientRect()
       setCursorPosition({
         x: (event.clientX / window.innerWidth) * 2 - 1,
         y: -(event.clientY / window.innerHeight) * 2 + 1

@@ -2,13 +2,6 @@ import Link from "next/link"
 import { Github, Linkedin, Twitter, Mail } from "lucide-react"
 import { site } from "@/site.config"
 
-const socialIcons = {
-  github: Github,
-  linkedin: Linkedin,
-  twitter: Twitter,
-  email: Mail,
-}
-
 export function Footer() {
   return (
     <footer className="border-t border-border/40 bg-background/95">

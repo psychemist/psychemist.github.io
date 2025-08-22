@@ -86,12 +86,14 @@ export function NavBar() {
 							<div className="md:hidden">
 								<button
 									type="button"
-									className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+									className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary transition-colors cursor-pointer"
 									aria-controls="mobile-menu"
-									aria-expanded="false"
+									aria-expanded={mobileMenuOpen}
 									onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
 								>
-									<span className="sr-only">Open main menu</span>
+									<span className="sr-only">
+										{mobileMenuOpen ? 'Close main menu' : 'Open main menu'}
+									</span>
 									{mobileMenuOpen ? (
 										<X className="block h-6 w-6" aria-hidden="true" />
 									) : (
@@ -129,16 +131,6 @@ export function NavBar() {
 									</Link>
 								)
 							})}
-
-							{/* Mobile Theme Toggle */}
-							<div className="pt-2 border-t border-border/20">
-								<div className="flex items-center justify-between px-3 py-2">
-									<span className="text-sm font-medium text-muted-foreground">
-										Theme
-									</span>
-									<ThemeToggle />
-								</div>
-							</div>
 						</div>
 					</div>
 				)}
