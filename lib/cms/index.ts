@@ -4,7 +4,6 @@ import {
   getMDXProjectBySlug,
   getMDXPosts,
   getMDXPostBySlug,
-  getMDXProfile,
   type Project,
   type Post,
   type Profile,
