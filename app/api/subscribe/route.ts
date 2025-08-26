@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
+import { statements } from "@/lib/database"
+import { siteConfig } from "@/site.config"
 
 // Subscriber validation schema
 const subscribeSchema = z.object({
   email: z.email("Please enter a valid email address"),
   name: z.string().min(2, "Name is required").max(100, "Name must be less than 100 characters").optional()
 })
-
-// Simple in-memory storage (replace with database in production)
-const subscribers = new Map<string, { email: string; name?: string; subscribedAt: Date; confirmed: boolean }>()
 
 async function sendWelcomeEmail(email: string, name?: string) {
   if (!process.env.RESEND_API_KEY) {
@@ -24,7 +23,7 @@ async function sendWelcomeEmail(email: string, name?: string) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'newsletter@yourdomain.com', // Replace with your verified domain
+        from: process.env.CONTACT_FROM_EMAIL || 'newsletter@psychemist.dev',
         to: [email],
         subject: 'Welcome to my newsletter! 🚀',
         html: `
@@ -44,7 +43,7 @@ async function sendWelcomeEmail(email: string, name?: string) {
             </div>
             
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 14px; color: #6b7280;">
-              <p>Want to unsubscribe? Reply to this email with "unsubscribe" and I'll remove you immediately.</p>
+              <p>Want to unsubscribe? <a href="${siteConfig.url}/unsubscribe?email=${encodeURIComponent(email)}" style="color: #2563eb;">Click here</a> or reply to this email with "unsubscribe".</p>
             </div>
           </div>
         `,
@@ -68,20 +67,26 @@ export async function POST(request: NextRequest) {
     const { email, name } = subscribeSchema.parse(body)
 
     // Check if already subscribed
-    if (subscribers.has(email)) {
+    const existingSubscriber = statements.getSubscriber.get(email)
+    if (existingSubscriber) {
       return NextResponse.json(
         { error: 'Already subscribed', message: 'This email is already subscribed!' },
         { status: 400 }
       )
     }
 
-    // Add subscriber
-    subscribers.set(email, {
-      email,
-      name,
-      subscribedAt: new Date(),
-      confirmed: true // In production, you'd want email confirmation
-    })
+    // Add subscriber to database
+    try {
+      statements.addSubscriber.run(email, name)
+    } catch (error: unknown) {
+      if ((error as { code?: string }).code === 'SQLITE_CONSTRAINT_UNIQUE') {
+        return NextResponse.json(
+          { error: 'Already subscribed', message: 'This email is already subscribed!' },
+          { status: 400 }
+        )
+      }
+      throw error
+    }
 
     // Send welcome email
     await sendWelcomeEmail(email, name)
@@ -109,14 +114,15 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  // Return subscriber count (for your homepage)
-  const confirmedSubscribers = Array.from(subscribers.values()).filter(sub => sub.confirmed)
+  // Return subscriber count
+  const subscribers = statements.getActiveSubscribers.all()
   
   return NextResponse.json({
-    count: confirmedSubscribers.length,
-    subscribers: confirmedSubscribers.map(sub => ({ email: sub.email, name: sub.name, subscribedAt: sub.subscribedAt }))
+    count: subscribers.length,
+    subscribers: (subscribers as Array<{ email: string; name: string; subscribed_at: string }>).map(sub => ({ 
+      email: sub.email, 
+      name: sub.name, 
+      subscribedAt: sub.subscribed_at 
+    }))
   })
 }
-
-// Export subscribers for use in other API routes
-export { subscribers }

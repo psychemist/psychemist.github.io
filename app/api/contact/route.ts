@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
+import { siteConfig } from "@/site.config"
+import { statements } from "@/lib/database"
 
 // Validation schema
 const contactFormSchema = z.object({
@@ -43,7 +45,7 @@ async function sendEmail(data: { name: string; email: string; message: string })
   // Check if email provider is configured
   if (!process.env.RESEND_API_KEY && !process.env.SMTP_HOST) {
     console.log("[DEV MODE] Email would be sent:", {
-      to: "hello@example.com", // This would come from site.config.ts
+      to: siteConfig.author.email,
       from: email,
       subject: `New contact form message from ${name}`,
       text: `
@@ -65,8 +67,8 @@ Message: ${message}
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'portfolio@yourdomain.com', // This should be your verified domain
-          to: ['hello@example.com'], // This would come from site.config.ts
+          from: process.env.CONTACT_FROM_EMAIL || 'portfolio@psychemist.dev', // Use verified domain
+          to: [siteConfig.author.email],
           subject: `New contact form message from ${name}`,
           html: `
             <div style="font-family: system-ui, sans-serif; line-height: 1.6; color: #333;">
@@ -136,6 +138,14 @@ export async function POST(request: NextRequest) {
     // Parse and validate request body
     const body = await request.json()
     const validatedData = contactFormSchema.parse(body)
+
+    // Store contact submission in database
+    try {
+      statements.addContact.run(validatedData.name, validatedData.email, validatedData.message)
+    } catch (error) {
+      console.error('Failed to store contact submission:', error)
+      // Continue even if database storage fails
+    }
 
     // Send email
     const emailResult = await sendEmail(validatedData)

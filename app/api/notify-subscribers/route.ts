@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
-import { subscribers } from "../subscribe/route"
+import { statements } from "@/lib/database"
+import { siteConfig } from "@/site.config"
 
 const notifySchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -28,7 +29,7 @@ async function sendBlogNotification(
     return { success: true, devMode: true, sentTo: subscriberEmails.length }
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yourportfolio.com"
+  const siteUrl = siteConfig.url
   const postUrl = `${siteUrl}/blog/${postData.slug}`
   
   try {
@@ -39,7 +40,7 @@ async function sendBlogNotification(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'newsletter@yourdomain.com', // Replace with your verified domain
+        from: process.env.CONTACT_FROM_EMAIL || 'newsletter@psychemist.dev',
         to: subscriberEmails,
         subject: `New post: ${postData.title}`,
         html: `
@@ -62,7 +63,7 @@ async function sendBlogNotification(
             
             <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 14px; color: #6b7280;">
               <p>You're receiving this because you subscribed to updates from my portfolio.</p>
-              <p>Want to unsubscribe? Reply to this email with "unsubscribe" and I'll remove you immediately.</p>
+              <p>Want to unsubscribe? <a href="${siteUrl}/unsubscribe?email=EMAIL_PLACEHOLDER" style="color: #2563eb;">Click here</a> or reply with "unsubscribe".</p>
               <p><a href="${siteUrl}" style="color: #2563eb;">Visit my portfolio</a></p>
             </div>
           </div>
@@ -97,12 +98,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get confirmed subscribers
-    const confirmedSubscribers = Array.from(subscribers.values())
-      .filter(sub => sub.confirmed)
-      .map(sub => sub.email)
+    // Get confirmed subscribers from database
+    const confirmedSubscribers = statements.getActiveSubscribers.all() as Array<{ email: string }>
+    const subscriberEmails = confirmedSubscribers.map(sub => sub.email)
 
-    if (confirmedSubscribers.length === 0) {
+    if (subscriberEmails.length === 0) {
       return NextResponse.json({
         success: true,
         message: 'No subscribers to notify',
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send notifications
-    const result = await sendBlogNotification(confirmedSubscribers, {
+    const result = await sendBlogNotification(subscriberEmails, {
       title: postData.title,
       slug: postData.slug,
       excerpt: postData.excerpt,
