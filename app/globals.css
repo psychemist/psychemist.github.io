@@ -67,6 +67,36 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+  
+  /* Ensure proper cursor styles for interactive elements */
+  button,
+  [role="button"],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="button"],
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  
+  a,
+  [role="link"] {
+    cursor: pointer;
+  }
+  
+  [disabled] {
+    cursor: not-allowed !important;
+  }
+  
+  input,
+  textarea,
+  select {
+    cursor: text;
+  }
+  
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
 }
 
 @layer utilities {
