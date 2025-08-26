@@ -13,7 +13,7 @@ import { SocialIcons } from "@/components/social-icons"
 export default function HomePage() {
   const [konamiActivated, setKonamiActivated] = useState(false)
   const [showDevMessage, setShowDevMessage] = useState(false)
-  const [subscriberCount, setSubscriberCount] = useState(0)
+  // const [subscriberCount, setSubscriberCount] = useState(0)
   const [email, setEmail] = useState('')
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [subscribeMessage, setSubscribeMessage] = useState('')
@@ -23,12 +23,16 @@ export default function HomePage() {
   useEffect(() => {
     fetch('/api/subscribe')
       .then(res => res.json())
-      .then(data => {
-        if (data.count !== undefined) {
-          setSubscriberCount(data.count)
-        }
+    //   .then(data => {
+    //     if (data.count !== undefined) {
+    //       setSubscriberCount(data.count)
+    //     }
+    //   })
+      .catch((err) => {
+        // Handle error silently for now
+        console.error('Failed to fetch subscriber count:', err)
+        // setSubscriberCount(0)
       })
-      .catch(err => console.error('Failed to fetch subscriber count:', err))
   }, [])
 
   // Handle subscription
@@ -49,7 +53,7 @@ export default function HomePage() {
       if (response.ok) {
         setSubscribeMessage(data.message)
         setEmail('')
-        setSubscriberCount(prev => prev + 1) // Optimistically update count
+        // setSubscriberCount(prev => prev + 1) // Optimistically update count
       } else {
         setSubscribeMessage(data.message || 'Failed to subscribe')
       }

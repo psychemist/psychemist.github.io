@@ -4,7 +4,6 @@ import Link from "next/link"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
-import { MDXComponents } from "@/components/mdx-components"
 
 // This would normally come from CMS or MDX files
 const BLOG_DATA = {

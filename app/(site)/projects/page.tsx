@@ -67,7 +67,11 @@ const SEED_PROJECTS = [
 
 export default function ProjectsPage() {
   const [selectedCategory, setSelectedCategory] = useState<"all" | "hackathons" | "personal">("all")
-  
+  // const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  // const filteredProjects = selectedCategory 
+  //   ? projects.filter(project => project.category === selectedCategory)
+  //   : projects
+
   const hackathonProjects = SEED_PROJECTS.filter(p => p.category === "hackathons")
   const personalProjects = SEED_PROJECTS.filter(p => p.category === "personal")
 
