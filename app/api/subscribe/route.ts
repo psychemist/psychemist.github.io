@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
+import { Resend } from "resend"
 import { statements } from "@/lib/database"
-import { siteConfig } from "@/site.config"
+import { WelcomeEmail } from "@/components/email-templates"
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Subscriber validation schema
 const subscribeSchema = z.object({
@@ -16,45 +19,18 @@ async function sendWelcomeEmail(email: string, name?: string) {
   }
 
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: process.env.CONTACT_FROM_EMAIL || 'newsletter@psychemist.dev',
-        to: [email],
-        subject: 'Welcome to my newsletter! 🚀',
-        html: `
-          <div style="font-family: system-ui, sans-serif; line-height: 1.6; color: #333; max-width: 600px;">
-            <h2 style="color: #2563eb;">Thanks for subscribing${name ? `, ${name}` : ''}! 🎉</h2>
-            
-            <p>You're now subscribed to get updates about:</p>
-            <ul style="color: #374151;">
-              <li>New projects and coding adventures</li>
-              <li>Insights on AI, web development, and technology</li>
-              <li>Behind-the-scenes content and lessons learned</li>
-            </ul>
-            
-            <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <p style="margin: 0;"><strong>What's next?</strong></p>
-              <p style="margin: 10px 0 0 0;">I'll send you an email whenever I publish something new. No spam, just quality content!</p>
-            </div>
-            
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 14px; color: #6b7280;">
-              <p>Want to unsubscribe? <a href="${siteConfig.url}/unsubscribe?email=${encodeURIComponent(email)}" style="color: #2563eb;">Click here</a> or reply to this email with "unsubscribe".</p>
-            </div>
-          </div>
-        `,
-      }),
+    const { data, error } = await resend.emails.send({
+      from: process.env.CONTACT_FROM_EMAIL || 'newsletter@psychemist.dev',
+      to: [email],
+      subject: 'Welcome to my newsletter! 🚀',
+      react: WelcomeEmail({ firstName: name, email }),
     })
 
-    if (!response.ok) {
-      throw new Error(`Resend API error: ${response.status}`)
+    if (error) {
+      throw new Error(`Resend API error: ${JSON.stringify(error)}`)
     }
 
-    return { success: true }
+    return { success: true, data }
   } catch (error) {
     console.error("Welcome email failed:", error)
     return { success: false, error: 'Failed to send welcome email' }
@@ -89,11 +65,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Send welcome email
-    await sendWelcomeEmail(email, name)
+    const emailResult = await sendWelcomeEmail(email, name)
+    
+    if (!emailResult.success && !emailResult.devMode) {
+      console.error('Welcome email failed, but user was subscribed')
+    }
 
     return NextResponse.json({
       success: true,
-      message: `Thanks for subscribing${name ? `, ${name}` : ''}! Check your email for a welcome message.`
+      message: `Thanks for subscribing${name ? `, ${name}` : ''}! ${emailResult.devMode ? '(Dev mode - no email sent)' : 'Check your email for a welcome message.'}`
     })
 
   } catch (error) {

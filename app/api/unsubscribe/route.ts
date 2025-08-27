@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
+import { Resend } from "resend"
 import { statements } from "@/lib/database"
+import { GoodbyeEmail } from "@/components/email-templates"
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Unsubscribe validation schema
 const unsubscribeSchema = z.object({
@@ -15,48 +19,18 @@ async function sendGoodbyeEmail(email: string, name?: string) {
   }
 
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: process.env.CONTACT_FROM_EMAIL || 'newsletter@psychemist.dev',
-        to: [email],
-        subject: "You've been unsubscribed",
-        html: `
-          <div style="font-family: system-ui, sans-serif; line-height: 1.6; color: #333; max-width: 600px;">
-            <h2 style="color: #6b7280;">Sorry to see you go${name ? `, ${name}` : ''}!</h2>
-            
-            <p>You've been successfully unsubscribed from my newsletter.</p>
-            
-            <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <p style="margin: 0;"><strong>What this means:</strong></p>
-              <ul style="margin: 10px 0 0 0;">
-                <li>You won't receive any more newsletter emails from me</li>
-                <li>Your email has been removed from my subscriber list</li>
-                <li>You can still contact me directly anytime</li>
-              </ul>
-            </div>
-            
-            <p>If you change your mind, you can always resubscribe on my website.</p>
-            
-            <p>Thanks for being part of the journey, even briefly! 🙏</p>
-            
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 14px; color: #6b7280;">
-              <p>This confirmation was sent to ensure you wanted to unsubscribe.</p>
-            </div>
-          </div>
-        `,
-      }),
+    const { data, error } = await resend.emails.send({
+      from: process.env.CONTACT_FROM_EMAIL || 'newsletter@psychemist.dev',
+      to: [email],
+      subject: "You've been unsubscribed",
+      react: GoodbyeEmail({ firstName: name, email }),
     })
 
-    if (!response.ok) {
-      throw new Error(`Resend API error: ${response.status}`)
+    if (error) {
+      throw new Error(`Resend API error: ${JSON.stringify(error)}`)
     }
 
-    return { success: true }
+    return { success: true, data }
   } catch (error) {
     console.error("Goodbye email failed:", error)
     return { success: false, error: 'Failed to send goodbye email' }
@@ -93,11 +67,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Send goodbye email
-    await sendGoodbyeEmail(email, subscriber.name)
+    const emailResult = await sendGoodbyeEmail(email, subscriber.name)
+    
+    if (!emailResult.success && !emailResult.devMode) {
+      console.error('Goodbye email failed, but user was unsubscribed')
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'You have been successfully unsubscribed. A confirmation email has been sent.'
+      message: `You have been successfully unsubscribed. ${emailResult.devMode ? '(Dev mode - no email sent)' : 'A confirmation email has been sent.'}`
     })
 
   } catch (error) {
@@ -117,7 +95,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Handle GET requests for unsubscribe page
+// Handle GET requests for unsubscribe page (one-click unsubscribe from emails)
 export async function GET(request: NextRequest) {
   const url = new URL(request.url)
   const email = url.searchParams.get('email')

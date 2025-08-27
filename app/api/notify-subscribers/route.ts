@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
+import { Resend } from "resend"
 import { statements } from "@/lib/database"
 import { siteConfig } from "@/site.config"
+import { BlogNotificationEmail } from "@/components/email-templates"
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 const notifySchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -30,54 +34,23 @@ async function sendBlogNotification(
   }
 
   const siteUrl = siteConfig.url
-  const postUrl = `${siteUrl}/blog/${postData.slug}`
   
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: process.env.CONTACT_FROM_EMAIL || 'newsletter@psychemist.dev',
-        to: subscriberEmails,
-        subject: `New post: ${postData.title}`,
-        html: `
-          <div style="font-family: system-ui, sans-serif; line-height: 1.6; color: #333; max-width: 600px;">
-            <h1 style="color: #2563eb; margin-bottom: 10px;">${postData.title}</h1>
-            <p style="color: #6b7280; margin-bottom: 20px;">
-              By ${postData.author} • ${postData.publishedAt ? new Date(postData.publishedAt).toLocaleDateString() : 'Just published'}
-            </p>
-            
-            <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2563eb;">
-              <p style="margin: 0; font-size: 16px; line-height: 1.6;">${postData.excerpt}</p>
-            </div>
-            
-            <div style="margin: 30px 0; text-align: center;">
-              <a href="${postUrl}" 
-                 style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 500;">
-                Read the full post →
-              </a>
-            </div>
-            
-            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 14px; color: #6b7280;">
-              <p>You're receiving this because you subscribed to updates from my portfolio.</p>
-              <p>Want to unsubscribe? <a href="${siteUrl}/unsubscribe?email=EMAIL_PLACEHOLDER" style="color: #2563eb;">Click here</a> or reply with "unsubscribe".</p>
-              <p><a href="${siteUrl}" style="color: #2563eb;">Visit my portfolio</a></p>
-            </div>
-          </div>
-        `,
+    const { data, error } = await resend.emails.send({
+      from: process.env.CONTACT_FROM_EMAIL || 'newsletter@psychemist.dev',
+      to: subscriberEmails,
+      subject: `New post: ${postData.title}`,
+      react: BlogNotificationEmail({
+        ...postData,
+        siteUrl
       }),
     })
 
-    if (!response.ok) {
-      const errorData = await response.text()
-      throw new Error(`Resend API error: ${response.status} - ${errorData}`)
+    if (error) {
+      throw new Error(`Resend API error: ${JSON.stringify(error)}`)
     }
 
-    const result = await response.json()
-    return { success: true, sentTo: subscriberEmails.length, messageId: result.id }
+    return { success: true, sentTo: subscriberEmails.length, data }
     
   } catch (error) {
     console.error("Blog notification failed:", error)
@@ -134,7 +107,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message,
       sentTo: result.sentTo,
-      messageId: result.messageId
+      data: result.data
     })
 
   } catch (error) {

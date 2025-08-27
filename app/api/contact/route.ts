@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
+import { Resend } from "resend"
 import { siteConfig } from "@/site.config"
 import { statements } from "@/lib/database"
+import { ContactFormEmail } from "@/components/email-templates"
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Validation schema
 const contactFormSchema = z.object({
@@ -43,7 +47,7 @@ async function sendEmail(data: { name: string; email: string; message: string })
   const { name, email, message } = data
 
   // Check if email provider is configured
-  if (!process.env.RESEND_API_KEY && !process.env.SMTP_HOST) {
+  if (!process.env.RESEND_API_KEY) {
     console.log("[DEV MODE] Email would be sent:", {
       to: siteConfig.author.email,
       from: email,
@@ -58,57 +62,18 @@ Message: ${message}
   }
 
   try {
-    if (process.env.RESEND_API_KEY) {
-      // Use Resend
-      const response = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: process.env.CONTACT_FROM_EMAIL || 'portfolio@psychemist.dev', // Use verified domain
-          to: [siteConfig.author.email],
-          subject: `New contact form message from ${name}`,
-          html: `
-            <div style="font-family: system-ui, sans-serif; line-height: 1.6; color: #333;">
-              <h2 style="color: #2563eb;">New Contact Form Submission</h2>
-              
-              <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3 style="margin-top: 0; color: #374151;">Contact Details</h3>
-                <p><strong>Name:</strong> ${name}</p>
-                <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-              </div>
-              
-              <div style="background: #f8fafc; padding: 20px; border-radius: 8px;">
-                <h3 style="margin-top: 0; color: #374151;">Message</h3>
-                <p style="white-space: pre-wrap;">${message}</p>
-              </div>
-              
-              <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 14px; color: #6b7280;">
-                <p>This message was sent from your portfolio contact form.</p>
-                <p>Timestamp: ${new Date().toISOString()}</p>
-              </div>
-            </div>
-          `,
-        }),
-      })
+    const { data: emailData, error } = await resend.emails.send({
+      from: process.env.CONTACT_FROM_EMAIL || 'portfolio@psychemist.dev',
+      to: [siteConfig.author.email],
+      subject: `New contact form message from ${name}`,
+      react: ContactFormEmail({ name, email, message }),
+    })
 
-      if (!response.ok) {
-        throw new Error(`Resend API error: ${response.status}`)
-      }
-
-      return { success: true }
+    if (error) {
+      throw new Error(`Resend API error: ${JSON.stringify(error)}`)
     }
 
-    if (process.env.SMTP_HOST) {
-      // Use nodemailer for custom SMTP (requires nodemailer to be installed)
-      // For now, just log that SMTP is not implemented
-      console.log("SMTP configuration detected but nodemailer not installed")
-      return { success: false, error: 'SMTP not implemented' }
-    }
-
-    return { success: false, error: 'No email provider configured' }
+    return { success: true, data: emailData }
   } catch (error) {
     console.error("Email sending failed:", error)
     return { success: false, error: 'Failed to send email' }
