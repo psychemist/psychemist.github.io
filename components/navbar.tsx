@@ -55,7 +55,7 @@ export function NavBar() {
 
 						{/* Desktop navigation */}
 						<div className="hidden md:block">
-							<div className="ml-10 flex items-baseline space-x-4" role="menubar">
+							<div className="flex items-baseline space-x-4" role="menubar">
 								{navigation.map((item) => {
 									const isActive = pathname === item.href
 									return (
