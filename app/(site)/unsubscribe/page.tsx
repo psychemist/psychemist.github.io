@@ -62,7 +62,7 @@ export default function UnsubscribePage() {
         <Card>
           <CardHeader className="text-center">
             <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <CardTitle>Unsubscribe</CardTitle>
+            <CardTitle className="text-2xl">Unsubscribe from Newsletter</CardTitle>
             <CardDescription>
               Sorry to see you go! You can unsubscribe from my newsletter here.
             </CardDescription>
@@ -92,7 +92,7 @@ export default function UnsubscribePage() {
 
                 <div>
                   <Label htmlFor="reason">
-                    Reason for unsubscribing (optional)
+                    Reason for unsubscribing (Optional)
                   </Label>
                   <Textarea
                     id="reason"
@@ -126,8 +126,8 @@ export default function UnsubscribePage() {
             <div className="mt-6 pt-4 border-t text-center">
               <p className="text-sm text-muted-foreground">
                 Changed your mind?{" "}
-                <Link href="/" className="text-primary hover:underline">
-                  Go back home
+                <Link href="/blog" className="text-primary hover:underline">
+                  Go back to blog page
                 </Link>{" "}
                 and resubscribe anytime.
               </p>
