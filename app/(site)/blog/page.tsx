@@ -1,44 +1,24 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { Calendar, Clock, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
-// Seed blog post data - TODO: Replace with CMS/MDX content in Phase 5
-const SEED_POSTS = [
-  {
-    slug: "building-in-public-failures",
-    title: "Building in Public: Learning from Failures",
-    excerpt: "Why I started documenting my project failures publicly and what it taught me about resilience in tech.",
-    tags: ["reflection", "startups", "learning"],
-    publishedAt: "2024-12-01",
-    readingTime: "5 min read",
-    featured: true
-  },
-  {
-    slug: "zk-privacy-healthcare",
-    title: "Zero-Knowledge Proofs in Healthcare",
-    excerpt: "Exploring how cryptographic privacy could revolutionize medical data sharing while protecting patient confidentiality.",
-    tags: ["privacy", "healthcare", "cryptography"],
-    publishedAt: "2024-11-15",
-    readingTime: "8 min read",
-    featured: false
-  },
-  {
-    slug: "digital-minimalism-developer",
-    title: "Digital Minimalism for Developers",
-    excerpt: "How reducing digital noise improved my focus and productivity as a software engineer.",
-    tags: ["productivity", "wellness", "focus"],
-    publishedAt: "2024-10-22",
-    readingTime: "6 min read",
-    featured: false
-  }
-]
+interface Post {
+  slug: string
+  title: string
+  excerpt: string
+  tags: string[]
+  publishedAt: string
+  readingTime?: string
+  featured?: boolean
+}
 
 interface BlogPostCardProps {
-  post: typeof SEED_POSTS[0]
+  post: Post
   featured?: boolean
 }
 
@@ -57,48 +37,52 @@ function BlogPostCard({ post, featured = false }: BlogPostCardProps) {
           </time>
           <span className="text-muted-foreground/60">•</span>
           <Clock className="w-4 h-4" />
-          <span>{post.readingTime}</span>
+          <span>{post.readingTime || 'Quick read'}</span>
         </div>
 
         <Link href={`/blog/${post.slug}`} className="group/title">
-          <h2 className={`font-bold text-foreground mb-3 group-hover/title:text-primary transition-colors ${featured ? 'text-2xl sm:text-3xl' : 'text-xl'}`}>
+          <h3 className={`font-bold text-foreground mb-3 group-hover/title:text-primary transition-colors ${featured ? 'text-2xl sm:text-3xl' : 'text-xl'}`}>
             {post.title}
-          </h2>
+          </h3>
         </Link>
 
-        <p className={`text-muted-foreground mb-4 ${featured ? 'text-lg line-clamp-3' : 'line-clamp-2'}`}>
+        <p className="text-muted-foreground mb-4 line-clamp-3 leading-relaxed">
           {post.excerpt}
         </p>
 
-        <div className="flex items-center justify-between">
-          <div className="flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <Badge 
-                key={tag} 
-                variant="secondary"
-                className="text-xs bg-primary/10 text-primary hover:bg-primary/20 border-primary/20"
-              >
-                {tag}
-              </Badge>
-            ))}
-          </div>
-          
-          <Link 
-            href={`/blog/${post.slug}`}
-            className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 font-medium group/link"
-          >
-            Read more
-            <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-          </Link>
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {post.tags.map((tag) => (
+            <Badge 
+              key={tag} 
+              variant="secondary" 
+              className="text-xs bg-primary/10 text-primary hover:bg-primary/20"
+            >
+              {tag}
+            </Badge>
+          ))}
         </div>
+
+        {/* Read More Link */}
+        <Link 
+          href={`/blog/${post.slug}`}
+          className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors group/link"
+        >
+          Read More
+          <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+        </Link>
       </div>
     </Card>
   )
 }
 
-export default function BlogPage() {
-  const featuredPost = SEED_POSTS.find(post => post.featured)
-  const regularPosts = SEED_POSTS.filter(post => !post.featured)
+interface BlogPageProps {
+  posts: Post[]
+}
+
+function BlogPageContent({ posts }: BlogPageProps) {
+  const featuredPost = posts.find(post => post.featured)
+  const regularPosts = posts.filter(post => !post.featured)
 
   return (
     <main id="main-content" className="min-h-screen pt-20 pb-16">
@@ -118,70 +102,128 @@ export default function BlogPage() {
           </p>
         </motion.div>
 
-        {/* Featured Post */}
-        {featuredPost && (
+        {posts.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-12"
+            transition={{ duration: 0.6 }}
+            className="text-center py-16"
           >
-            <div className="flex items-center gap-2 mb-6">
-              <div className="h-1 w-8 bg-primary rounded-full"></div>
-              <h2 className="text-lg font-semibold text-foreground">Featured</h2>
-            </div>
-            <BlogPostCard post={featuredPost} featured />
+            <h2 className="text-2xl font-semibold text-foreground mb-4">
+              Coming Soon
+            </h2>
+            <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
+              I&apos;m working on some thoughtful posts about technology, healthcare, and building meaningful software. 
+              Check back soon for updates!
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            >
+              Get Notified
+            </Link>
           </motion.div>
-        )}
-
-        {/* Recent Posts */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <div className="flex items-center gap-2 mb-8">
-            <div className="h-1 w-8 bg-muted-foreground/50 rounded-full"></div>
-            <h2 className="text-lg font-semibold text-foreground">Recent Posts</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {regularPosts.map((post, index) => (
+        ) : (
+          <>
+            {/* Featured Post */}
+            {featuredPost && (
               <motion.div
-                key={post.slug}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.5 + (index * 0.1) }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="mb-16"
               >
-                <BlogPostCard post={post} />
+                <div className="text-center mb-8">
+                  <Badge variant="secondary" className="bg-primary/10 text-primary mb-4">
+                    Featured Post
+                  </Badge>
+                </div>
+                <BlogPostCard post={featuredPost} featured />
               </motion.div>
-            ))}
-          </div>
-        </motion.div>
+            )}
 
-        {/* Newsletter CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-16 p-8 border border-border/40 rounded-xl bg-card/80 backdrop-blur-sm"
-        >
-          <h2 className="text-2xl font-semibold text-foreground mb-4">
-            Never miss a post
-          </h2>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            Get notified when I publish new articles about technology, healthcare innovation, and future thinking.
-          </p>
-          <motion.a
-            href="/contact"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
-          >
-            Subscribe for Updates
-          </motion.a>
-        </motion.div>
+            {/* Regular Posts Grid */}
+            {regularPosts.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-8"
+              >
+                {regularPosts.map((post, index) => (
+                  <motion.div
+                    key={post.slug}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
+                  >
+                    <BlogPostCard post={post} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+
+            {/* Newsletter CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-center mt-16 pt-12 border-t border-border/40"
+            >
+              <h2 className="text-2xl font-bold text-foreground mb-4">
+                Stay Updated
+              </h2>
+              <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
+                Get notified when I publish new posts about technology, healthcare innovation, and thoughtful software development.
+              </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+              >
+                Subscribe to Updates
+              </Link>
+            </motion.div>
+          </>
+        )}
       </div>
     </main>
   )
+}
+
+export default function BlogPage() {
+  const [posts, setPosts] = useState<Post[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        const response = await fetch('/api/posts')
+        if (response.ok) {
+          const postsData = await response.json()
+          setPosts(postsData)
+        } else {
+          console.error('Failed to fetch posts')
+          setPosts([])
+        }
+      } catch (error) {
+        console.error('Failed to load posts:', error)
+        setPosts([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadPosts()
+  }, [])
+
+  if (loading) {
+    return (
+      <main id="main-content" className="min-h-screen pt-20 pb-16 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">Loading posts...</p>
+        </div>
+      </main>
+    )
+  }
+
+  return <BlogPageContent posts={posts} />
 }

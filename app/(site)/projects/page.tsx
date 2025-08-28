@@ -1,79 +1,32 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ProjectCard } from "@/components/project-card"
 
-// Seed project data - TODO: Replace with CMS/MDX content in Phase 5
-const SEED_PROJECTS = [
-  // Hackathon Projects
-  {
-    slug: "zk-medical-records",
-    title: "ZK Medical Records",
-    summary: "Privacy-preserving medical record system using zero-knowledge proofs. Patients can prove health conditions without revealing sensitive data.",
-    tags: ["solidity", "zk", "privacy", "healthcare"],
-    category: "hackathons" as const,
-    role: "full-stack developer",
-    date: "2024-09-15",
-    links: {
-      demo: "http://localhost:3000/projects/zk-medical",
-      repo: "https://github.com/example/zk-medical-records"
-    },
-    coverImage: "/images/projects/zk-medical-placeholder.png"
-  },
-  {
-    slug: "neural-trading-bot",
-    title: "Neural Trading Bot",
-    summary: "AI-powered cryptocurrency trading bot that uses neural networks to analyze market patterns and execute trades autonomously.",
-    tags: ["python", "ai", "trading", "tensorflow"],
-    category: "hackathons" as const,
-    role: "ml engineer",
-    date: "2024-07-20",
-    links: {
-      repo: "https://github.com/example/neural-trading-bot"
-    }
-  },
-  
-  // Personal Projects  
-  {
-    slug: "digital-minimalism-platform",
-    title: "Digital Minimalism Platform",
-    summary: "Web app helping users reduce digital clutter and build healthier technology habits through mindful usage tracking.",
-    tags: ["react", "next.js", "postgresql", "wellness"],
-    category: "personal" as const,
-    role: "creator",
-    date: "2024-11-03",
-    links: {
-      demo: "http://localhost:3000/projects/digital-minimalism",
-      repo: "https://github.com/example/digital-minimalism"
-    },
-    coverImage: "/images/projects/digital-minimalism-placeholder.png"
-  },
-  {
-    slug: "calm-focus-timer",
-    title: "Calm Focus Timer",
-    summary: "Beautiful Pomodoro timer with ambient sounds, progress tracking, and integration with productivity workflows.",
-    tags: ["typescript", "react", "pwa", "productivity"],
-    category: "personal" as const,
-    role: "designer & developer",
-    date: "2024-05-12",
-    links: {
-      demo: "http://localhost:3000/projects/calm-focus",
-      repo: "https://github.com/example/calm-focus-timer"
-    }
+interface Project {
+  slug: string
+  title: string
+  summary: string
+  tags: string[]
+  category: "hackathons" | "personal"
+  role: string
+  date: string
+  links: {
+    demo?: string
+    repo?: string
   }
-]
+  coverImage?: string
+}
 
-export default function ProjectsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<"all" | "hackathons" | "personal">("all")
-  // const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  // const filteredProjects = selectedCategory 
-  //   ? projects.filter(project => project.category === selectedCategory)
-  //   : projects
+interface ProjectsPageProps {
+  projects: Project[]
+}
 
-  const hackathonProjects = SEED_PROJECTS.filter(p => p.category === "hackathons")
-  const personalProjects = SEED_PROJECTS.filter(p => p.category === "personal")
+function ProjectsPageContent({ projects }: ProjectsPageProps) {
+  const hackathonProjects = projects.filter(p => p.category === "hackathons")
+  const personalProjects = projects.filter(p => p.category === "personal")
 
   return (
     <main id="main-content" className="min-h-screen pt-20 pb-16">
@@ -102,7 +55,7 @@ export default function ProjectsPage() {
           <Tabs defaultValue="all" className="w-full">
             <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-12 bg-muted/50 backdrop-blur-sm">
               <TabsTrigger value="all" className="data-[state=active]:bg-background data-[state=active]:text-foreground">
-                All ({SEED_PROJECTS.length})
+                All ({projects.length})
               </TabsTrigger>
               <TabsTrigger value="hackathons" className="data-[state=active]:bg-background data-[state=active]:text-foreground">
                 Hackathons ({hackathonProjects.length})
@@ -120,16 +73,27 @@ export default function ProjectsPage() {
                 transition={{ duration: 0.4 }}
                 className="grid grid-cols-1 md:grid-cols-2 gap-8"
               >
-                {SEED_PROJECTS.map((project, index) => (
-                  <motion.div
-                    key={project.slug}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                  >
-                    <ProjectCard project={project} />
-                  </motion.div>
-                ))}
+                {projects.length > 0 ? (
+                  projects.map((project, index) => (
+                    <motion.div
+                      key={project.slug}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                    >
+                      <ProjectCard project={project} />
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-16">
+                    <p className="text-muted-foreground text-lg mb-4">
+                      No projects available yet.
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Check back soon for updates on my latest work!
+                    </p>
+                  </div>
+                )}
               </motion.div>
             </TabsContent>
 
@@ -141,16 +105,27 @@ export default function ProjectsPage() {
                 transition={{ duration: 0.4 }}
                 className="grid grid-cols-1 md:grid-cols-2 gap-8"
               >
-                {hackathonProjects.map((project, index) => (
-                  <motion.div
-                    key={project.slug}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                  >
-                    <ProjectCard project={project} />
-                  </motion.div>
-                ))}
+                {hackathonProjects.length > 0 ? (
+                  hackathonProjects.map((project, index) => (
+                    <motion.div
+                      key={project.slug}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                    >
+                      <ProjectCard project={project} />
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-16">
+                    <p className="text-muted-foreground text-lg mb-4">
+                      No hackathon projects available yet.
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      I&apos;ll be sharing my hackathon experiments soon!
+                    </p>
+                  </div>
+                )}
               </motion.div>
             </TabsContent>
 
@@ -162,16 +137,27 @@ export default function ProjectsPage() {
                 transition={{ duration: 0.4 }}
                 className="grid grid-cols-1 md:grid-cols-2 gap-8"
               >
-                {personalProjects.map((project, index) => (
-                  <motion.div
-                    key={project.slug}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                  >
-                    <ProjectCard project={project} />
-                  </motion.div>
-                ))}
+                {personalProjects.length > 0 ? (
+                  personalProjects.map((project, index) => (
+                    <motion.div
+                      key={project.slug}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                    >
+                      <ProjectCard project={project} />
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-16">
+                    <p className="text-muted-foreground text-lg mb-4">
+                      No personal projects available yet.
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      I&apos;m working on some exciting personal projects to share!
+                    </p>
+                  </div>
+                )}
               </motion.div>
             </TabsContent>
           </Tabs>
@@ -182,19 +168,19 @@ export default function ProjectsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center mt-16 p-8 border border-border/40 rounded-xl bg-card/80 backdrop-blur-sm"
+          className="text-center mt-16 pt-12 border-t border-border/40"
         >
-          <h2 className="text-2xl font-semibold text-foreground mb-4">
+          <h2 className="text-2xl font-bold text-foreground mb-4">
             Interested in collaborating?
           </h2>
-          <p className="text-muted-foreground mb-6">
-            I&apos;m always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
+          <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
+            I&apos;m always open to discussing interesting projects, hackathons, or opportunities to build something meaningful together.
           </p>
           <motion.a
             href="/contact"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
           >
             Get in Touch
           </motion.a>
@@ -202,4 +188,55 @@ export default function ProjectsPage() {
       </div>
     </main>
   )
+}
+
+// Server Component wrapper
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const response = await fetch('/api/projects')
+        if (response.ok) {
+          const projectsData = await response.json()
+          // Ensure projects have required fields with defaults
+          const processedProjects = projectsData.map((project: Partial<Project>) => ({
+            slug: project.slug || '',
+            title: project.title || '',
+            summary: project.summary || '',
+            tags: project.tags || [],
+            category: project.category || 'personal' as const,
+            role: project.role || 'developer',
+            date: project.date || new Date().toISOString(),
+            links: project.links || {},
+            coverImage: project.coverImage
+          }))
+          setProjects(processedProjects)
+        } else {
+          console.error('Failed to fetch projects')
+          setProjects([])
+        }
+      } catch (error) {
+        console.error('Failed to load projects:', error)
+        setProjects([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadProjects()
+  }, [])
+
+  if (loading) {
+    return (
+      <main id="main-content" className="min-h-screen pt-20 pb-16 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">Loading projects...</p>
+        </div>
+      </main>
+    )
+  }
+
+  return <ProjectsPageContent projects={projects} />
 }
