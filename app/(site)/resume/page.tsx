@@ -82,7 +82,9 @@ export default function ResumePage() {
             <div className="mb-8">
               <h3 className="text-xl font-semibold text-foreground mb-4">Professional Summary</h3>
               <p className="text-muted-foreground leading-relaxed">
-                {site.bioFormal} Passionate about creating technology that enhances human potential while 
+                {site.bioFormal}
+              </p>
+              <p>Passionate about creating technology that enhances human potential while
                 maintaining ethical standards and accessibility. Experience spans full-stack development, 
                 AI/ML applications, and privacy-preserving systems.
               </p>
@@ -141,29 +143,32 @@ export default function ResumePage() {
                     Built with Solidity, React, and cryptographic libraries.
                   </p>
                 </div>
-                
-                <div className="p-4 rounded-lg bg-muted/30 border border-border/40">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium text-foreground">Digital Minimalism Platform</h4>
-                    <Badge variant="secondary">2024</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Full-stack web application helping users build healthier technology habits. 
-                    Next.js, PostgreSQL, and behavioral psychology principles.
-                  </p>
-                </div>
               </div>
             </div>
 
             {/* Education & Background */}
             <div>
               <h3 className="text-xl font-semibold text-foreground mb-4">Education & Background</h3>
-              <div className="p-4 rounded-lg bg-muted/30 border border-border/40">
-                <h4 className="font-medium text-foreground">Medical Doctor (MD)</h4>
-                <p className="text-sm text-muted-foreground">
-                  Medical degree provides unique perspective on healthcare technology challenges 
-                  and human-centered design principles.
-                </p>
+              <div className="space-y-4">
+                <div className="p-4 rounded-lg bg-muted/30 border border-border/40">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-foreground">Computer Science Student</h4>
+                    <Badge variant="secondary">Current</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Currently pursuing computer science studies with focus on software engineering, 
+                    embedded sytems, algorithms, and system design. Bridging theoretical foundations 
+                    with practical development experience.
+                  </p>
+                </div>
+                
+                <div className="p-4 rounded-lg bg-muted/30 border border-border/40">
+                  <h4 className="font-medium text-foreground">Medical Doctor (M.B.B.S, Nigeria)</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Medical degree provides unique perspective on healthcare technology challenges 
+                    and human-centered design principles.
+                  </p>
+                </div>
               </div>
             </div>
           </Card>
